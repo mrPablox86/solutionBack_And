@@ -8,9 +8,9 @@ using System.Linq;
 namespace battleships
 {
 	///<summary>Состояние клетки поля</summary>
-	public enum MapCell
+	public enum CellOfMap
 	{
-		Empty = 0,
+		Empty,
 
 		Ship,
 
@@ -85,7 +85,7 @@ namespace battleships
 	///<summary>Карта</summary>
 	public class Map
 	{
-		private static MapCell[,] cells;
+		private static CellOfMap[,] cells;
 		public static Ship[,] shipsMap;
 
 		///<summary>Конструктор</summary>
@@ -93,7 +93,7 @@ namespace battleships
 		{
 			Width = width;
 			Height = height;
-			cells = new MapCell[width, height];
+			cells = new CellOfMap[width, height];
 			shipsMap = new Ship[width, height];
 		}
 
@@ -105,11 +105,11 @@ namespace battleships
 		///<summary>Высота поля</summary>
 		public int Height { get; private set; }
 
-		public MapCell this[Vector p]
+		public CellOfMap this[Vector p]
 		{
 			get
 			{
-				return CheckBounds(p) ? cells[p.X, p.Y] : MapCell.Empty; // Благодаря этому трюку иногда можно будет не проверять на выход за пределы поля. 
+				return CheckBounds(p) ? cells[p.X, p.Y] : CellOfMap.Empty; // Благодаря этому трюку иногда можно будет не проверять на выход за пределы поля. 
 			}
 			private set
 			{
@@ -125,14 +125,14 @@ namespace battleships
 			var ship = new Ship(v, n, direction);
 			var shipCells = ship.GetShipCells();
 			//Если рядом есть непустая клетка, то поместить корабль нельзя!
-			if (shipCells.SelectMany(Near).Any(c => this[c] != MapCell.Empty)) return false;
+			if (shipCells.SelectMany(Near).Any(c => this[c] != CellOfMap.Empty)) return false;
 			//Если корабль не помещается — тоже нельзя
 			if (!shipCells.All(CheckBounds)) return false;
 
 			// Иначе, ставим корабль
 			foreach (var cell in shipCells)
 				{
-					this[cell] = MapCell.Ship;
+					this[cell] = CellOfMap.Ship;
 					shipsMap[cell.X, cell.Y] = ship;
 				}
 			Ships.Add(ship);
@@ -142,19 +142,19 @@ namespace battleships
 		///<summary>Бойтесь все!!!</summary>
 		public ShtEffct Badaboom(Vector target)
 		{
-			var hit = CheckBounds(target) && this[target] == MapCell.Ship;
+			var hit = CheckBounds(target) && this[target] == CellOfMap.Ship;
 			
 			
 			if (hit)
 			{
 				var ship = shipsMap[target.X, target.Y];
 				ship.AliveCells.Remove(target);
-				this[target] = MapCell.DeadShip;
+				this[target] = CellOfMap.DeadShip;
 				return ship.Alive ? ShtEffct.Wound : ShtEffct.Kill;
 			}
 
 
-			if (this[target] == MapCell.Empty) this[target] = MapCell.Miss;
+			if (this[target] == CellOfMap.Empty) this[target] = CellOfMap.Miss;
 			return ShtEffct.Miss;
 		}
 

@@ -30,17 +30,17 @@ namespace battleships
 			return sb.ToString();
 		}
 
-		private string GetSymbol(MapCell cell)
+		private string GetSymbol(CellOfMap cell)
 		{
 			switch (cell)
 			{
-				case MapCell.Empty:
+				case CellOfMap.Empty:
 					return " ";
-				case MapCell.Miss:
+				case CellOfMap.Miss:
 					return "*";
-				case MapCell.Ship:
+				case CellOfMap.Ship:
 					return "O";
-				case MapCell.DeadShip:
+				case CellOfMap.DeadShip:
 					return "X";
 				default:
 					throw new Exception(cell.ToString());

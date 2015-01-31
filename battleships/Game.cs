@@ -70,8 +70,8 @@ namespace battleships
 		{
 			var corners = new[] {new Vector(-1, -1), new Vector(-1, 1), new Vector(1, -1), new Vector(1, 1)};
 			return
-				Map[target] != MapCell.Empty && Map[target] != MapCell.Ship
-				|| corners.Any(d => Map[target.Add(d)] == MapCell.DeadShip)
+				Map[target] != CellOfMap.Empty && Map[target] != CellOfMap.Ship
+				|| corners.Any(d => Map[target.Add(d)] == CellOfMap.DeadShip)
 				|| Map.Near(target).Any(c => Map.shipsMap[c.X, c.Y] != null && !Map.shipsMap[c.X, c.Y].Alive);
 		}
 	}
