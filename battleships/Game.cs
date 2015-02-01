@@ -6,7 +6,7 @@ namespace battleships
 {
 	public class ShootInfo
 	{
-		public ShtEffct Hit;
+		public ShotEffect Hit;
 		public Vector Target;
 	}
 
@@ -43,7 +43,7 @@ namespace battleships
 			if (IsBadShot(LastTarget)) BadShots++;
 			var hit = Map.Badaboom(LastTarget);
 			LastShootInfo = new ShootInfo {Target = LastTarget, Hit = hit};
-			if (hit == ShtEffct.Miss)
+			if (hit == ShotEffect.Miss)
 				TurnsCount++;
 		}
 
@@ -70,9 +70,9 @@ namespace battleships
 		{
 			var corners = new[] {new Vector(-1, -1), new Vector(-1, 1), new Vector(1, -1), new Vector(1, 1)};
 			return
-				Map[target] != CellOfMap.Empty && Map[target] != CellOfMap.Ship
-				|| corners.Any(d => Map[target.Add(d)] == CellOfMap.DeadShip)
-				|| Map.Near(target).Any(c => Map.shipsMap[c.X, c.Y] != null && !Map.shipsMap[c.X, c.Y].Alive);
+				Map[target] != MapCell.Empty && Map[target] != MapCell.Ship
+				|| corners.Any(d => Map[target.Add(d)] == MapCell.DeadShip)
+				|| Map.Near(target).Any(c => Map.mapShips[c.X, c.Y] != null && !Map.mapShips[c.X, c.Y].Alive);
 		}
 	}
 }

@@ -31,7 +31,7 @@ namespace battleships
 			return RceiveNextShoot();
 		}
 
-		public Vector GetNextShoot(Vector lastShootTarget, ShtEffct lastShoot)
+		public Vector GetNextShoot(Vector lastShootTarget, ShotEffect lastShoot)
 		{
 			SendMessage("{0} {1} {2}", lastShoot, lastShootTarget.X, lastShootTarget.Y);
 			return RceiveNextShoot();

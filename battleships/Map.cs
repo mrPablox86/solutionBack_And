@@ -8,7 +8,7 @@ using System.Linq;
 namespace battleships
 {
 	///<summary>Состояние клетки поля</summary>
-	public enum CellOfMap
+	public enum MapCell
 	{
 		Empty,
 
@@ -20,7 +20,7 @@ namespace battleships
 	}
 
 	///<summary>Результат выстрела</summary>
-	public enum ShtEffct
+	public enum ShotEffect
 	{
 		
 		Miss,
@@ -85,16 +85,16 @@ namespace battleships
 	///<summary>Карта</summary>
 	public class Map
 	{
-		private static CellOfMap[,] cells;
-		public static Ship[,] shipsMap;
+		private static MapCell[,] cells;
+		public static Ship[,] mapShips;
 
 		///<summary>Конструктор</summary>
 		public Map(int width, int height)
 		{
 			Width = width;
 			Height = height;
-			cells = new CellOfMap[width, height];
-			shipsMap = new Ship[width, height];
+			cells = new MapCell[width, height];
+			mapShips = new Ship[width, height];
 		}
 
 		///<summary>Корабли на поле</summary>
@@ -105,11 +105,11 @@ namespace battleships
 		///<summary>Высота поля</summary>
 		public int Height { get; private set; }
 
-		public CellOfMap this[Vector p]
+		public MapCell this[Vector p]
 		{
 			get
 			{
-				return CheckBounds(p) ? cells[p.X, p.Y] : CellOfMap.Empty; // Благодаря этому трюку иногда можно будет не проверять на выход за пределы поля. 
+				return CheckBounds(p) ? cells[p.X, p.Y] : MapCell.Empty; // Благодаря этому трюку иногда можно будет не проверять на выход за пределы поля. 
 			}
 			private set
 			{
@@ -125,37 +125,37 @@ namespace battleships
 			var ship = new Ship(v, n, direction);
 			var shipCells = ship.GetShipCells();
 			//Если рядом есть непустая клетка, то поместить корабль нельзя!
-			if (shipCells.SelectMany(Near).Any(c => this[c] != CellOfMap.Empty)) return false;
+			if (shipCells.SelectMany(Near).Any(c => this[c] != MapCell.Empty)) return false;
 			//Если корабль не помещается — тоже нельзя
 			if (!shipCells.All(CheckBounds)) return false;
 
 			// Иначе, ставим корабль
 			foreach (var cell in shipCells)
 				{
-					this[cell] = CellOfMap.Ship;
-					shipsMap[cell.X, cell.Y] = ship;
+					this[cell] = MapCell.Ship;
+					mapShips[cell.X, cell.Y] = ship;
 				}
 			Ships.Add(ship);
 			return true;
 		}
 
 		///<summary>Бойтесь все!!!</summary>
-		public ShtEffct Badaboom(Vector target)
+		public ShotEffect Badaboom(Vector target)
 		{
-			var hit = CheckBounds(target) && this[target] == CellOfMap.Ship;
+			var hit = CheckBounds(target) && this[target] == MapCell.Ship;
 			
 			
 			if (hit)
 			{
-				var ship = shipsMap[target.X, target.Y];
+				var ship = mapShips[target.X, target.Y];
 				ship.AliveCells.Remove(target);
-				this[target] = CellOfMap.DeadShip;
-				return ship.Alive ? ShtEffct.Wound : ShtEffct.Kill;
+				this[target] = MapCell.DeadShip;
+				return ship.Alive ? ShotEffect.Wound : ShotEffect.Kill;
 			}
 
 
-			if (this[target] == CellOfMap.Empty) this[target] = CellOfMap.Miss;
-			return ShtEffct.Miss;
+			if (this[target] == MapCell.Empty) this[target] = MapCell.Miss;
+			return ShotEffect.Miss;
 		}
 
 		///<summary>Окрестность ячейки</summary>
